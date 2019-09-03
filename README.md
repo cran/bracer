@@ -1,12 +1,16 @@
 bracer
 ======
 
+[![CRAN Status Badge](https://www.r-pkg.org/badges/version/bracer)](https://cran.r-project.org/package=bracer)
 [![Travis-CI Build Status](https://travis-ci.org/trevorld/bracer.png?branch=master)](https://travis-ci.org/trevorld/bracer)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/trevorld/bracer?branch=master&svg=true)](https://ci.appveyor.com/project/trevorld/bracer)
 [![Coverage Status](https://img.shields.io/codecov/c/github/trevorld/bracer/master.svg)](https://codecov.io/github/trevorld/bracer?branch=master)
 [![Project Status: Inactive – The project has reached a stable, usable state but is no longer being actively developed; support/maintenance will be provided as time allows.](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#inactive)
 
 ``bracer`` provides support for performing [brace expansions](https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Brace-Expansion) on strings in R.
+
+Examples
+--------
 
 
 ```r
@@ -52,6 +56,47 @@ expand_braces("Foo{{d..d},{bar,biz}}.{py,bash}")
 ## [6] "Foobiz.bash"
 ```
 
+``expand_braces`` is vectorized and returns one big character vector of all the brace expansions.  ``str_expand_braces`` is an alternative that returns a list of character vectors.
+
+
+```r
+expand_braces(c("Foo{A..F}", "Bar.{py,bash}", "{{Biz}}"))
+```
+
+```
+## [1] "FooA"     "FooB"     "FooC"     "FooD"     "FooE"     "FooF"    
+## [7] "Bar.py"   "Bar.bash" "{{Biz}}"
+```
+
+```r
+str_expand_braces(c("Foo{A..F}", "Bar.{py,bash}", "{{Biz}}"))
+```
+
+```
+## [[1]]
+## [1] "FooA" "FooB" "FooC" "FooD" "FooE" "FooF"
+## 
+## [[2]]
+## [1] "Bar.py"   "Bar.bash"
+## 
+## [[3]]
+## [1] "{{Biz}}"
+```
+
+``glob`` is a wrapper around ``Sys.glob`` that uses ``expand_braces`` to support both brace and wildcard expansion on file paths.
+
+
+```r
+glob("R/*.{R,r,S,s}")
+```
+
+```
+## [1] "R/expand.R" "R/glob.R"
+```
+
+Installation          
+------------
+
 To install the release version on CRAN use the following command in R:
 
 
@@ -66,10 +111,13 @@ To install the developmental version use the following command in R:
 remotes::install_github("trevorld/bracer")
 ```
 
+Caveats
+-------
+
 ``bracer`` currently does not properly support the "correct" (Bash-style) brace expansion under several edge conditions such as:
 
-1. Unbalanced braces e.g. ``{a,d}}``
-2. Using surrounding quotes to escape terms e.g. ``{'a,b','c'}``
-3. Escaped *inner* braces e.g. ``{a,b\\}c,d}``
-4. (Non-escaping) backslashes before braces e.g. ``{a,\\\\{a,b}c}'``
+1. Unbalanced braces e.g. ``{{a,d}`` (but you could use an escaped brace instead ``\\{{a,d}``)
+2. Using surrounding quotes to escape terms e.g. ``{'a,b','c'}`` (but you could use an escaped comma instead  ``{a\\,b,c}``)
+3. Escaped braces within comma-separated lists e.g. ``{a,b\\}c,d}``
+4. (Non-escaping) backslashes before braces e.g. ``{a,\\\\{a,b}c}``
 5. Sequences from letters to non-letter ASCII characters e.g. ``X{a..#}X``

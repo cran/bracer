@@ -1,6 +1,6 @@
 Package: bracer
 Title: Brace Expansions
-Version: 1.2.0
+Version: 1.2.1
 Authors@R: 
     c(person(given = "Trevor",
              family = "Davis",
@@ -20,9 +20,9 @@ Encoding: UTF-8
 Suggests: testthat, V8
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2021-05-17 03:05:32 UTC; trevorld
+Packaged: 2021-05-18 04:53:07 UTC; trevorld
 Author: Trevor Davis [aut, cre],
   Jon Schlinkert [aut] (Author of the 'braces' Javascript library)
 Maintainer: Trevor Davis <trevor.l.davis@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-05-17 05:00:06 UTC
+Date/Publication: 2021-05-19 12:20:02 UTC
